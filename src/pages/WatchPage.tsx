@@ -238,7 +238,7 @@ export default function WatchPage() {
                 <span className="hidden sm:inline">Auto Next</span>
               </button>
 
-              {/* Playlist Toggle */}
+              {/* Playlist Toggle (Visible only on Mobile/Tablet) */}
               <button
                 onClick={() => setShowPlaylist(!showPlaylist)}
                 className="px-3 py-2 rounded-lg bg-surface-800/50 text-surface-400 hover:text-white hover:bg-surface-800/80 transition-all flex items-center gap-1.5 text-sm lg:hidden"
@@ -270,7 +270,7 @@ export default function WatchPage() {
         </div>
       </div>
 
-      {/* Playlist Panel - Desktop always visible, mobile toggleable */}
+      {/* 1. Desktop Playlist Panel: Always visible on large PC screens */}
       <div className="hidden lg:block">
         <PlaylistPanel
           lectures={playlistLectures}
@@ -281,14 +281,18 @@ export default function WatchPage() {
           subjectName={subjectName}
         />
       </div>
-      <PlaylistPanel
-        lectures={playlistLectures}
-        currentLectureId={lecture.id}
-        onSelect={handleLectureSelect}
-        isOpen={showPlaylist}
-        onClose={() => setShowPlaylist(false)}
-        subjectName={subjectName}
-      />
+
+      {/* 2. Mobile/Tablet Playlist Panel: Hidden on large PC screens, toggles via button on small screens */}
+      <div className="lg:hidden">
+        <PlaylistPanel
+          lectures={playlistLectures}
+          currentLectureId={lecture.id}
+          onSelect={handleLectureSelect}
+          isOpen={showPlaylist}
+          onClose={() => setShowPlaylist(false)}
+          subjectName={subjectName}
+        />
+      </div>
     </div>
   );
 }
