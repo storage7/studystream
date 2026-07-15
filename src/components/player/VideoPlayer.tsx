@@ -53,34 +53,39 @@ export default function VideoPlayer({ server, onFullscreenToggle }: Props) {
   return (
     <div
       ref={containerRef}
-      className="relative aspect-video bg-black rounded-2xl overflow-hidden group"
+      className={`relative bg-black overflow-hidden group ${
+        isFullscreen ? 'w-screen h-screen rounded-none' : 'aspect-video rounded-2xl'
+      }`}
     >
-      {/* Loading overlay */}
+      {/* Loading overlay - Highest priority (z-50) */}
       {loading && (
-        <div className="absolute inset-0 z-30 bg-black/80 flex flex-col items-center justify-center gap-4">
+        <div className="absolute inset-0 z-50 bg-black/80 flex flex-col items-center justify-center gap-4">
           <LoadingSpinner size="lg" />
           <p className="text-surface-400 text-sm animate-pulse">Loading video...</p>
         </div>
       )}
 
-      {/* Watermark */}
-      <VideoWatermark />
-
-      {/* Video iframe */}
+      {/* Video iframe - Base layer (z-10) */}
+      {/* CRITICAL: allowFullScreen has been REMOVED so the iframe cannot hijack fullscreen */}
       <iframe
         src={server.embedUrl}
-        className="absolute inset-0 w-full h-full"
-        allowFullScreen
+        className="absolute inset-0 w-full h-full z-10"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         onLoad={() => setLoading(false)}
         sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
         style={{ border: 'none' }}
       />
 
-      {/* Fullscreen button */}
+      {/* Watermark - Layered ABOVE the video (z-40) with pointer-events-none */}
+      <div className="absolute inset-0 z-40 pointer-events-none overflow-hidden">
+        <VideoWatermark />
+      </div>
+
+      {/* Fullscreen button - Top layer (z-50) */}
       <button
         onClick={handleFullscreen}
-        className="absolute top-3 right-3 z-20 p-2 rounded-lg bg-black/50 text-white/70 hover:text-white hover:bg-black/70 transition-all opacity-0 group-hover:opacity-100"
+        className="absolute top-3 right-3 z-50 p-2 rounded-lg bg-black/60 text-white/70 hover:text-white hover:bg-black/80 transition-all opacity-0 group-hover:opacity-100 shadow-lg backdrop-blur-sm"
+        title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
       >
         {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
       </button>
