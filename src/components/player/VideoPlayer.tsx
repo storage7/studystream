@@ -57,7 +57,7 @@ export default function VideoPlayer({ server, onFullscreenToggle }: Props) {
         isFullscreen ? 'w-screen h-screen rounded-none' : 'aspect-video rounded-2xl'
       }`}
     >
-      {/* Loading overlay - Highest priority (z-50) */}
+      {/* Loading overlay */}
       {loading && (
         <div className="absolute inset-0 z-50 bg-black/80 flex flex-col items-center justify-center gap-4">
           <LoadingSpinner size="lg" />
@@ -65,8 +65,7 @@ export default function VideoPlayer({ server, onFullscreenToggle }: Props) {
         </div>
       )}
 
-      {/* Video iframe - Base layer (z-10) */}
-      {/* CRITICAL: allowFullScreen has been REMOVED so the iframe cannot hijack fullscreen */}
+      {/* Video iframe */}
       <iframe
         src={server.embedUrl}
         className="absolute inset-0 w-full h-full z-10"
@@ -76,15 +75,16 @@ export default function VideoPlayer({ server, onFullscreenToggle }: Props) {
         style={{ border: 'none' }}
       />
 
-      {/* Watermark - Layered ABOVE the video (z-40) with pointer-events-none */}
+      {/* Watermark */}
       <div className="absolute inset-0 z-40 pointer-events-none overflow-hidden">
         <VideoWatermark />
       </div>
 
-      {/* Fullscreen button - Top layer (z-50) */}
+      {/* Fullscreen button */}
+      {/* CHANGED: opacity-100 by default (visible on mobile), hides on desktop until hovered (md:opacity-0 md:group-hover:opacity-100) */}
       <button
         onClick={handleFullscreen}
-        className="absolute top-3 right-3 z-50 p-2 rounded-lg bg-black/60 text-white/70 hover:text-white hover:bg-black/80 transition-all opacity-0 group-hover:opacity-100 shadow-lg backdrop-blur-sm"
+        className="absolute top-3 right-3 z-50 p-2 rounded-lg bg-black/60 text-white/80 hover:text-white hover:bg-black/80 transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 shadow-lg backdrop-blur-sm"
         title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
       >
         {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
