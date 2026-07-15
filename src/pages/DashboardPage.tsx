@@ -24,7 +24,7 @@ export default function DashboardPage() {
   const navigate = useNavigate();
 
   const continueWatching: PlaybackProgress[] = getContinueWatching();
-  const recentHistory: WatchHistory[] = getWatchHistory().slice(0, 10);
+  const recentHistory: WatchHistory[] = getWatchHistory();
   const allProgress = getPlaybackProgress();
 
   const totalLectures = batches.reduce(
@@ -95,36 +95,42 @@ export default function DashboardPage() {
             <TrendingUp className="w-5 h-5 text-primary-400" />
             <h2 className="text-lg font-semibold text-white">Continue Watching</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {continueWatching.map(item => (
-              <button
-                key={item.lectureId}
-                onClick={() => navigate(`/watch/${item.lectureId}`)}
-                className="glass rounded-2xl overflow-hidden text-left hover:border-primary-500/30 transition-all duration-300 group hover:scale-[1.02] transform"
-              >
-                <div className="relative h-32 bg-gradient-to-br from-primary-600/20 to-accent-600/10 flex items-center justify-center">
-                  <PlayCircle className="w-12 h-12 text-white/40 group-hover:text-white/70 transition-all duration-300 group-hover:scale-110" />
-                  {/* Progress bar */}
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-surface-800">
-                    <div
-                      className="h-full bg-gradient-to-r from-primary-500 to-accent-500 transition-all"
-                      style={{ width: `${item.percentage}%` }}
-                    />
+          {/* Changed grid to lg:grid-cols-4 for exactly 4 columns on PC */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {continueWatching
+              .slice(0, 4) // Limit to maximum 4 items
+              .map((item, idx) => (
+                <button
+                  key={item.lectureId}
+                  onClick={() => navigate(`/watch/${item.lectureId}`)}
+                  // Added conditional: hide index 2 & 3 on mobile (<lg), show on PC
+                  className={`glass rounded-2xl overflow-hidden text-left hover:border-primary-500/30 transition-all duration-300 group hover:scale-[1.02] transform ${
+                    idx >= 2 ? 'hidden lg:block' : 'block'
+                  }`}
+                >
+                  <div className="relative h-32 bg-gradient-to-br from-primary-600/20 to-accent-600/10 flex items-center justify-center">
+                    <PlayCircle className="w-12 h-12 text-white/40 group-hover:text-white/70 transition-all duration-300 group-hover:scale-110" />
+                    {/* Progress bar */}
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-surface-800">
+                      <div
+                        className="h-full bg-gradient-to-r from-primary-500 to-accent-500 transition-all"
+                        style={{ width: `${item.percentage}%` }}
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="p-4">
-                  <h3 className="text-sm font-medium text-white truncate group-hover:text-primary-300 transition-colors">
-                    {item.lectureTitle}
-                  </h3>
-                  <p className="text-xs text-surface-500 mt-1 truncate">
-                    {item.subjectName} • {item.batchName}
-                  </p>
-                  <p className="text-xs text-primary-400 mt-2">
-                    {Math.round(item.percentage)}% completed
-                  </p>
-                </div>
-              </button>
-            ))}
+                  <div className="p-4">
+                    <h3 className="text-sm font-medium text-white truncate group-hover:text-primary-300 transition-colors">
+                      {item.lectureTitle}
+                    </h3>
+                    <p className="text-xs text-surface-500 mt-1 truncate">
+                      {item.subjectName} • {item.batchName}
+                    </p>
+                    <p className="text-xs text-primary-400 mt-2">
+                      {Math.round(item.percentage)}% completed
+                    </p>
+                  </div>
+                </button>
+              ))}
           </div>
         </section>
       )}
@@ -136,29 +142,35 @@ export default function DashboardPage() {
             <Clock className="w-5 h-5 text-accent-400" />
             <h2 className="text-lg font-semibold text-white">Recently Watched</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {recentHistory.map(item => (
-              <button
-                key={item.lectureId}
-                onClick={() => navigate(`/watch/${item.lectureId}`)}
-                className="glass rounded-2xl overflow-hidden text-left hover:border-primary-500/30 transition-all duration-300 group hover:scale-[1.02] transform"
-              >
-                <div className="relative h-28 bg-gradient-to-br from-surface-800/50 to-surface-900/50 flex items-center justify-center">
-                  <PlayCircle className="w-10 h-10 text-white/30 group-hover:text-white/60 transition-all" />
-                </div>
-                <div className="p-4">
-                  <h3 className="text-sm font-medium text-white truncate group-hover:text-primary-300 transition-colors">
-                    {item.lectureTitle}
-                  </h3>
-                  <p className="text-xs text-surface-500 mt-1 truncate">
-                    {item.subjectName} • {item.batchName}
-                  </p>
-                  <p className="text-xs text-surface-600 mt-2">
-                    {new Date(item.timestamp).toLocaleDateString()}
-                  </p>
-                </div>
-              </button>
-            ))}
+          {/* Changed grid to lg:grid-cols-4 for exactly 4 columns on PC */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {recentHistory
+              .slice(0, 4) // Limit to maximum 4 items
+              .map((item, idx) => (
+                <button
+                  key={item.lectureId}
+                  onClick={() => navigate(`/watch/${item.lectureId}`)}
+                  // Added conditional: hide index 2 & 3 on mobile (<lg), show on PC
+                  className={`glass rounded-2xl overflow-hidden text-left hover:border-primary-500/30 transition-all duration-300 group hover:scale-[1.02] transform ${
+                    idx >= 2 ? 'hidden lg:block' : 'block'
+                  }`}
+                >
+                  <div className="relative h-28 bg-gradient-to-br from-surface-800/50 to-surface-900/50 flex items-center justify-center">
+                    <PlayCircle className="w-10 h-10 text-white/30 group-hover:text-white/60 transition-all" />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-sm font-medium text-white truncate group-hover:text-primary-300 transition-colors">
+                      {item.lectureTitle}
+                    </h3>
+                    <p className="text-xs text-surface-500 mt-1 truncate">
+                      {item.subjectName} • {item.batchName}
+                    </p>
+                    <p className="text-xs text-surface-600 mt-2">
+                      {new Date(item.timestamp).toLocaleDateString()}
+                    </p>
+                  </div>
+                </button>
+              ))}
           </div>
         </section>
       )}
